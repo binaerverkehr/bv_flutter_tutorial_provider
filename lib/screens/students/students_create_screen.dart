@@ -1,12 +1,25 @@
+import 'package:bv_flutter_tutorial_provider_rec3/global_app_state.dart';
+import 'package:bv_flutter_tutorial_provider_rec3/models/class_model.dart';
+import 'package:bv_flutter_tutorial_provider_rec3/models/student_model.dart';
 import 'package:flutter/material.dart';
 
-class StudentsCreateScreen extends StatelessWidget {
+class StudentsCreateScreen extends StatefulWidget {
   StudentsCreateScreen({Key? key}) : super(key: key);
 
-  final classList = ['Class A'];
+  @override
+  State<StudentsCreateScreen> createState() => _StudentsCreateScreenState();
+}
+
+class _StudentsCreateScreenState extends State<StudentsCreateScreen> {
+  ClassModel? _selectedClass;
+
+  TextEditingController _firstNameController = TextEditingController(text: '');
+  TextEditingController _lastNameController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
+    final classList = context.dependOnInheritedWidgetOfExactType<GlobalAppState>()!.classes;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Create new student'),
@@ -20,6 +33,7 @@ class StudentsCreateScreen extends StatelessWidget {
               child: Column(
                 children: [
                   TextField(
+                    controller: _firstNameController,
                     autofocus: true,
                     decoration: InputDecoration(
                       labelText: 'First name',
@@ -32,6 +46,7 @@ class StudentsCreateScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   TextField(
+                    controller: _lastNameController,
                     autofocus: true,
                     decoration: InputDecoration(
                       labelText: 'Last name',
@@ -43,22 +58,29 @@ class StudentsCreateScreen extends StatelessWidget {
                     ),
                   ),
                   DropdownButton(
-                    value: 'Class A',
+                    value: _selectedClass,
                     hint: Text('Please choose a class'),
-                    items: <DropdownMenuItem<String>>[
-                      DropdownMenuItem(
-                        child: Text('Class A'),
-                        value: 'Class A',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Class B'),
-                        value: 'Class B',
-                      ),
-                    ],
-                    onChanged: (newValue) {},
+                    items: classList.map<DropdownMenuItem<ClassModel>>((classModel) {
+                      return DropdownMenuItem<ClassModel>(
+                        child: Text(classModel.title),
+                        value: classModel,
+                      );
+                    }).toList(),
+                    onChanged: (ClassModel? newValue) {
+                      setState(() {
+                        _selectedClass = newValue;
+                      });
+                    },
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      final newStudent = StudentModel(
+                          firstName: _firstNameController.text,
+                          lastName: _lastNameController.text,
+                          classModel: _selectedClass);
+                      context.dependOnInheritedWidgetOfExactType<GlobalAppState>()!.students.add(newStudent);
+                      Navigator.pop(context);
+                    },
                     child: Text('Create student'),
                   ),
                 ],

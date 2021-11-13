@@ -1,7 +1,16 @@
+import 'package:bv_flutter_tutorial_provider_rec3/global_app_state.dart';
+import 'package:bv_flutter_tutorial_provider_rec3/models/class_model.dart';
 import 'package:flutter/material.dart';
 
-class ClassesCreateScreen extends StatelessWidget {
+class ClassesCreateScreen extends StatefulWidget {
   const ClassesCreateScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ClassesCreateScreen> createState() => _ClassesCreateScreenState();
+}
+
+class _ClassesCreateScreenState extends State<ClassesCreateScreen> {
+  TextEditingController _classTitleController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +23,7 @@ class ClassesCreateScreen extends StatelessWidget {
         child: Column(
           children: [
             TextField(
+              controller: _classTitleController,
               autofocus: true,
               decoration: InputDecoration(
                 labelText: 'Class title',
@@ -25,7 +35,11 @@ class ClassesCreateScreen extends StatelessWidget {
               ),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                final newClass = ClassModel(title: _classTitleController.text);
+                context.dependOnInheritedWidgetOfExactType<GlobalAppState>()!.classes.add(newClass);
+                Navigator.pop(context);
+              },
               child: Text('Create class'),
             ),
           ],
