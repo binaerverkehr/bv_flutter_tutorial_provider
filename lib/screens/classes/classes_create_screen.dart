@@ -1,6 +1,7 @@
-import 'package:bv_flutter_tutorial_provider_rec3/global_app_state.dart';
 import 'package:bv_flutter_tutorial_provider_rec3/models/class_model.dart';
+import 'package:bv_flutter_tutorial_provider_rec3/providers/class_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ClassesCreateScreen extends StatefulWidget {
   const ClassesCreateScreen({Key? key}) : super(key: key);
@@ -14,6 +15,8 @@ class _ClassesCreateScreenState extends State<ClassesCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final classProvider = Provider.of<ClassProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Create new class'),
@@ -37,7 +40,7 @@ class _ClassesCreateScreenState extends State<ClassesCreateScreen> {
             ElevatedButton(
               onPressed: () {
                 final newClass = ClassModel(title: _classTitleController.text);
-                context.dependOnInheritedWidgetOfExactType<GlobalAppState>()!.classes.add(newClass);
+                classProvider.add(newClass);
                 Navigator.pop(context);
               },
               child: Text('Create class'),

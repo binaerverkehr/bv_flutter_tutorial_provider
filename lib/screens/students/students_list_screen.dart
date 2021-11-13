@@ -1,7 +1,9 @@
-import 'package:bv_flutter_tutorial_provider_rec3/global_app_state.dart';
+import 'package:bv_flutter_tutorial_provider_rec3/providers/student_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'students_create_screen.dart';
+
+import 'package:provider/provider.dart';
 
 class StudentsListScreen extends StatefulWidget {
   const StudentsListScreen({Key? key}) : super(key: key);
@@ -13,27 +15,27 @@ class StudentsListScreen extends StatefulWidget {
 class _StudentsListScreenState extends State<StudentsListScreen> {
   @override
   Widget build(BuildContext context) {
-    final studentList = context.dependOnInheritedWidgetOfExactType<GlobalAppState>()!.students;
+    final studentProvider = Provider.of<StudentProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Students'),
       ),
-      body: studentList.isEmpty
+      body: studentProvider.items.isEmpty
           ? Center(
               child: Text('No students created yet.'),
             )
           : ListView.builder(
-              itemCount: studentList.length,
+              itemCount: studentProvider.items.length,
               itemBuilder: (context, index) {
-                final studentItem = studentList[index];
+                final studentItem = studentProvider.items[index];
                 return ListTile(
                   title: Text(studentItem.firstName + " " + studentItem.lastName),
                   // TODO: Calculate students count
                   subtitle: Text(studentItem.classModel!.title),
                   onLongPress: () {
                     setState(() {
-                      studentList.remove(studentItem);
+                      studentProvider.remove(studentItem);
                     });
                   },
                 );

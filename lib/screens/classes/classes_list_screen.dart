@@ -1,7 +1,9 @@
-import 'package:bv_flutter_tutorial_provider_rec3/global_app_state.dart';
+import 'package:bv_flutter_tutorial_provider_rec3/providers/class_provider.dart';
+import 'package:bv_flutter_tutorial_provider_rec3/providers/student_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'classes_create_screen.dart';
+import 'package:provider/provider.dart';
 
 class ClassesListScreen extends StatefulWidget {
   const ClassesListScreen({Key? key}) : super(key: key);
@@ -13,29 +15,26 @@ class ClassesListScreen extends StatefulWidget {
 class _ClassesListScreenState extends State<ClassesListScreen> {
   @override
   Widget build(BuildContext context) {
-    final classList = context.dependOnInheritedWidgetOfExactType<GlobalAppState>()!.classes;
+    final classProvider = Provider.of<ClassProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Classes'),
       ),
-      body: classList.isEmpty
+      body: classProvider.items.isEmpty
           ? Center(
               child: Text('No classes created yet.'),
             )
           : ListView.builder(
-              itemCount: classList.length,
+              itemCount: classProvider.items.length,
               itemBuilder: (context, index) {
-                final classItem = classList[index];
+                final classItem = classProvider.items[index];
                 return ListTile(
                   title: Text(classItem.title),
                   // TODO: Calculate students count
-                  subtitle: Text(
-                      '${context.dependOnInheritedWidgetOfExactType<GlobalAppState>()!.getStudentsCountOfClass(classItem)}'),
+                  subtitle: Text('${Provider.of<StudentProvider>(context).getStudentsCountOfClass(classItem)}'),
                   onLongPress: () {
-                    setState(() {
-                      classList.remove(classItem);
-                    });
+                    classProvider.remove(classItem);
                   },
                 );
               }),
